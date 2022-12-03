@@ -185,6 +185,82 @@ pub mod day2 {
     }
 }
 
+pub mod day3 {
+    use std::collections::HashSet;
+
+    pub fn part1(lines: std::str::Lines) -> i32 {
+        let mut priority_score = 0;
+
+        for line in lines {
+            let left = &line[..(line.len() / 2)];
+            let right = &line[(line.len() / 2)..];
+
+            let common = find_common(left, right);
+            priority_score += get_priority(common)
+        }
+
+        priority_score
+    }
+
+    pub fn part2(lines: std::str::Lines) -> i32 {
+        let mut priority_score = 0;
+
+        let mut current_lines: Vec<&str> = Vec::new();
+        for (count, line) in lines.enumerate() {
+            if count % 3 == 0 && count != 0 {
+                let common = find_common_in_lines(&current_lines);
+                priority_score += get_priority(common);
+
+                current_lines.clear();
+            }
+
+            current_lines.push(line)
+        }
+
+        if current_lines.len() == 3 {
+            let common = find_common_in_lines(&current_lines);
+            priority_score += get_priority(common);
+        }
+
+        priority_score
+    }
+
+    fn find_common(left: &str, right: &str) -> char {
+        let left_chars: HashSet<char> = HashSet::from_iter(left.chars());
+
+        for c in right.chars() {
+            if left_chars.contains(&c) {
+                return c;
+            }
+        }
+
+        ' '
+    }
+
+    fn find_common_in_lines(lines: &Vec<&str>) -> char {
+        let first_chars: HashSet<char> = HashSet::from_iter(lines[0].chars());
+        let second_chars: HashSet<char> = HashSet::from_iter(lines[1].chars());
+
+        for c in lines[2].chars() {
+            if first_chars.contains(&c) && second_chars.contains(&c) {
+                return c;
+            }
+        }
+
+        ' '
+    }
+
+    fn get_priority(c: char) -> i32 {
+        if c >= 'a' && c <= 'z' {
+            return c as i32 - 'a' as i32 + 1;
+        } else if c >= 'A' && c <= 'Z' {
+            return c as i32 - 'A' as i32 + 27;
+        } else {
+            return 0;
+        }
+    }
+}
+
 mod tests {
     #[test]
     fn day1_part1() {
@@ -250,5 +326,33 @@ C Z
 ";
 
         assert_eq!(crate::day2::part2(input.lines()), 12)
+    }
+
+    #[test]
+    fn day3_part1() {
+        let input = "\
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+";
+
+        assert_eq!(crate::day3::part1(input.lines()), 157)
+    }
+
+    #[test]
+    fn day3_part2() {
+        let input = "\
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+";
+
+        assert_eq!(crate::day3::part2(input.lines()), 70)
     }
 }
