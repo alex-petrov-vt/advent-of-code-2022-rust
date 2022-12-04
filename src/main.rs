@@ -1,4 +1,4 @@
-use advent_of_code_2022_rust::{day1, day2, day3};
+use advent_of_code_2022_rust::{day1, day2, day3, day4};
 use std::fs;
 use std::time::Instant;
 
@@ -19,6 +19,11 @@ fn main() {
     let contents = fs::read_to_string("input/day3.txt").unwrap();
     println!("{}", day3::part1(contents.lines()));
     println!("{}", day3::part2(contents.lines()));
+
+    println!("=== DAY 4 ===");
+    let contents = fs::read_to_string("input/day4.txt").unwrap();
+    println!("{}", day4::part1(contents.lines()));
+    println!("{}", day4::part2(contents.lines()));
 
     let elapsed = start.elapsed().as_millis();
     println!("Total execution time is {} milliseconds", elapsed);

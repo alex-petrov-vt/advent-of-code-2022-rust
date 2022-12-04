@@ -261,6 +261,65 @@ pub mod day3 {
     }
 }
 
+pub mod day4 {
+    pub fn part1(lines: std::str::Lines) -> i32 {
+        let mut pairs = 0;
+
+        for line in lines {
+            let (first, second) = parse_intervals(line);
+
+            if fully_contains(first, second) {
+                pairs += 1
+            }
+        }
+
+        pairs
+    }
+
+    pub fn part2(lines: std::str::Lines) -> i32 {
+        let mut overlaps = 0;
+
+        for line in lines {
+            let (first, second) = parse_intervals(line);
+
+            if overlap(first, second) {
+                overlaps += 1
+            }
+        }
+
+        overlaps
+    }
+
+    fn parse_intervals(line: &str) -> ((i32, i32), (i32, i32)) {
+        let mut intervals = line.split(',');
+        let first_str = intervals.next().unwrap();
+        let second_str = intervals.next().unwrap();
+
+        let first: Vec<&str> = first_str.split('-').collect();
+        let second: Vec<&str> = second_str.split('-').collect();
+
+        (
+            (
+                first[0].parse::<i32>().unwrap(),
+                first[1].parse::<i32>().unwrap(),
+            ),
+            (
+                second[0].parse::<i32>().unwrap(),
+                second[1].parse::<i32>().unwrap(),
+            ),
+        )
+    }
+
+    fn fully_contains(first: (i32, i32), second: (i32, i32)) -> bool {
+        return (first.0 <= second.0 && first.1 >= second.1)
+            || (second.0 <= first.0 && second.1 >= first.1);
+    }
+
+    fn overlap(first: (i32, i32), second: (i32, i32)) -> bool {
+        return std::cmp::min(first.1, second.1) >= std::cmp::max(first.0, second.0);
+    }
+}
+
 mod tests {
     #[test]
     fn day1_part1() {
@@ -354,5 +413,33 @@ CrZsJsPPZsGzwwsLwLmpwMDw
 ";
 
         assert_eq!(crate::day3::part2(input.lines()), 70)
+    }
+
+    #[test]
+    fn day4_part1() {
+        let input = "\
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+";
+
+        assert_eq!(crate::day4::part1(input.lines()), 2)
+    }
+
+    #[test]
+    fn day4_part2() {
+        let input = "\
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+";
+
+        assert_eq!(crate::day4::part2(input.lines()), 4)
     }
 }
